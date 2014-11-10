@@ -1,12 +1,55 @@
 language: rust
 
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    - platform-tools
+    - tools
+
+    # The BuildTools version used by your project
+    - build-tools-19.1.0
+
+    # The SDK version used to compile your project
+    - android-19
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-19
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - sys-img-armeabi-v7a-android-19
+    - sys-img-x86-android-17
+
+env:
+  matrix:
+    - ANDROID=1
+    - ANDROID=0
+
 install:
   - sudo apt-get install libXxf86vm-dev libosmesa6-dev
 
-script:
-  - cargo build --verbose
-  - cargo test --no-run --verbose
-  - cargo test --verbose --features "headless" --no-default-features
+before_script: |
+  if [[ $ANDROID == 1 ]]
+  then
+    git submodule update --init &&
+    cd deps/apk-builder/apk-builder && cargo build && cd ../../..
+  fi
+
+script: |
+  if [[ $ANDROID == 1 ]]
+  then
+    cargo build --verbose --target arm-linux-androideabi &&
+    cargo test --no-run --verbose --target arm-linux-androideabi &&
+    cargo test --verbose --features "headless" --no-default-features --target arm-linux-androideabi
+  else
+    cargo build --verbose &&
+    cargo test --no-run --verbose &&
+  cargo test --verbose --features "headless" --no-default-features
+  fi
 
 os:
   - linux
