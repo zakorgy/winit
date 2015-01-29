@@ -30,6 +30,6 @@ fn main() {
         context.draw_frame((0.0, 1.0, 0.0, 1.0));
         window.swap_buffers();
 
-        println!("{:?}", window.wait_events().next());
+        println!("{:?}", window.wait_next_event());
     }
 }

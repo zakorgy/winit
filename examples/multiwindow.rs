@@ -47,6 +47,6 @@ fn run(window: glutin::Window, color: (f32, f32, f32, f32)) {
         context.draw_frame(color);
         window.swap_buffers();
 
-        window.wait_events().next();
+        window.wait_next_event();
     }
 }

@@ -575,6 +575,12 @@ impl Window {
         WaitEventsIterator { window: self, data: self.window.wait_events().into_iter() }
     }
 
+    /// Returns the next event in the events queue. Blocks until one is available if necessary.
+    #[inline]
+    pub fn wait_next_event(&self) -> Event {
+        self.wait_events().next().unwrap()
+    }
+
     /// Sets the context as the current context.
     #[inline]
     pub unsafe fn make_current(&self) {
