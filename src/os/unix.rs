@@ -4,7 +4,7 @@ use libc;
 use Window;
 use platform::Window as LinuxWindow;
 
-/// Additional methods on `Window` that are specific to unix.
+/// Additional methods on `Window` that are specific to Unix.
 pub trait WindowExt {
     /// Returns a pointer to the `Window` object of xlib that is used by this window.
     ///
@@ -37,4 +37,12 @@ impl WindowExt for Window {
             _ => None
         }
     }
+}
+
+/// Additional methods on `WindowBuilder` that are specific to Unix.
+pub trait WindowBuilderExt {
+
+}
+
+impl<'a> WindowBuilderExt for WindowBuilder<'a> {
 }

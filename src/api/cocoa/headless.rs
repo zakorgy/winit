@@ -21,6 +21,9 @@ mod gl {
 static mut framebuffer: u32 = 0;
 static mut texture: u32 = 0;
 
+#[derive(Default)]
+pub struct PlatformSpecificHeadlessBuilderAttributes;
+
 pub struct HeadlessContext {
     width: u32,
     height: u32,
@@ -29,7 +32,9 @@ pub struct HeadlessContext {
 
 impl HeadlessContext {
     pub fn new((width, height): (u32, u32), _pf_reqs: &PixelFormatRequirements,
-               _opengl: &GlAttributes<&HeadlessContext>) -> Result<HeadlessContext, CreationError>
+               _opengl: &GlAttributes<&HeadlessContext>,
+               _: &PlatformSpecificHeadlessBuilderAttributes)
+               -> Result<HeadlessContext, CreationError>
     {
         let context = unsafe {
             let attributes = [
