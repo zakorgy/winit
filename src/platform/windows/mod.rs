@@ -15,8 +15,6 @@ use CursorState;
 
 use WindowAttributes;
 
-gen_api_transition!();
-
 #[derive(Clone, Default)]
 pub struct PlatformSpecificWindowBuilderAttributes {
     pub parent: Option<winapi::HWND>,

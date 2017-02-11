@@ -30,9 +30,6 @@ pub fn new_window(window: &WindowAttributes, pl_attribs: &PlatformSpecificWindow
     let attribs = pl_attribs.clone();
     // initializing variables to be sent to the task
 
-    let title = OsStr::new(&window.title).encode_wide().chain(Some(0).into_iter())
-                                          .collect::<Vec<_>>();
-
     let (tx, rx) = channel();
 
     // `GetMessage` must be called in the same thread as CreateWindow, so we create a new thread
@@ -66,7 +63,7 @@ pub fn new_window(window: &WindowAttributes, pl_attribs: &PlatformSpecificWindow
     rx.recv().unwrap()
 }
 
-unsafe fn init(title: Vec<u16>, window: &WindowAttributes, pl_attribs: PlatformSpecificWindowBuilderAttributes) -> Result<Window, CreationError> {
+unsafe fn init(window: &WindowAttributes, pl_attribs: PlatformSpecificWindowBuilderAttributes) -> Result<Window, CreationError> {
     // registering the window class
     let class_name = register_window_class();
 
@@ -83,6 +80,9 @@ unsafe fn init(title: Vec<u16>, window: &WindowAttributes, pl_attribs: PlatformS
         let monitor = window.monitor.as_ref().unwrap();
         try!(switch_to_fullscreen(&mut rect, monitor));
     }
+
+    let title = OsStr::new(&window.title).encode_wide().chain(Some(0).into_iter())
+                                          .collect::<Vec<_>>();
 
     // computing the style and extended style of the window
     let (ex_style, style) = if window.monitor.is_some() || !window.decorations {
