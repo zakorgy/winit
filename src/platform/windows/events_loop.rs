@@ -298,8 +298,10 @@ struct ThreadLocalData {
 fn send_event(event: Event) {
     CONTEXT_STASH.with(|context_stash| {
         let context_stash = context_stash.borrow();
-
-        let _ = context_stash.as_ref().unwrap().sender.send(event);   // Ignoring if closed
+        if let Some(cstash) = context_stash.as_ref() {
+            let _ = cstash.sender.send(event);
+        }
+        //let _ = context_stash.as_ref().unwrap().sender.send(event);   // Ignoring if closed
     });
 }
 
@@ -341,7 +343,10 @@ pub unsafe extern "system" fn callback(window: winapi::HWND, msg: winapi::UINT,
             // callback.
             CONTEXT_STASH.with(|context_stash| {
                 let mut context_stash = context_stash.borrow_mut();
-                let cstash = context_stash.as_mut().unwrap();
+                let cstash = match context_stash.as_mut() {
+                    Some(ctx_stash) => ctx_stash,
+                    None => return (),
+                };
 
                 let event = Event::WindowEvent {
                     window_id: SuperWindowId(WindowId(window)),
